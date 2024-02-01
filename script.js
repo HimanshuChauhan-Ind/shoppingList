@@ -5,11 +5,23 @@ const clrBtn = document.querySelector('.btn-clear')
 const filter = document.querySelector('.filter')
 
 //A function that inserts into the ul the op from the form
-function addItem(){
+function addItem(e){
     
+    e.preventDefault()
+    
+    let itemTxt = document.createTextNode(itemInput.value)
+    addItemDOM(itemTxt)
+
+    addItemLclStorage(itemTxt.textContent)
+
+    itemInput.value = ''
+
+    resetUI()
+}
+
+function addItemDOM(itemTxt){
     if(itemInput.value){
         let liItem = document.createElement('li')
-        let itemTxt = document.createTextNode(itemInput.value)
         liItem.appendChild(itemTxt)
         let btn = document.createElement('button')
         btn.className = 'remove-item btn-link text-red'
@@ -20,12 +32,22 @@ function addItem(){
         itemList.appendChild(liItem)
         
     }else{
-        return
+        alert('Add some item first.')
     }
-
-    resetUI()
 }
 
+function addItemLclStorage(item){
+    let itemsLclStorage;
+    if (localStorage.getItem('items') === null){
+        itemsLclStorage = []
+    }else{
+        itemsLclStorage = JSON.parse(localStorage.getItem('items'))
+    }
+
+    itemsLclStorage.push(item)
+    console.log(itemsLclStorage)
+    localStorage.setItem('items',JSON.stringify(itemsLclStorage))
+}
 
 function removeItem(e){
     // console.log(e.target.className)
@@ -48,12 +70,7 @@ function removeAllItem(){
    resetUI()
 }
 
-// Event listener to the form submit
-addItemBtn.addEventListener('click',function(e){
-    e.preventDefault()
-    addItem()
-    itemInput.value = ''
-})
+
 
 // Reset UI
 function resetUI(){
@@ -85,7 +102,8 @@ function filterItems(e){
     })
 }
 
-// Removing items
+// Event Listeners
+addItemBtn.addEventListener('click',addItem)
 itemList.addEventListener('click',removeItem)
 clrBtn.addEventListener('click',removeAllItem)
 filter.addEventListener('input',filterItems)
