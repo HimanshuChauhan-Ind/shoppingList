@@ -68,8 +68,26 @@ function resetUI(){
 
 }
 
+// Filter Items
+function filterItems(e){
+    // console.log(e.target.value)
+    const txt = e.target.value.toLowerCase()
+    const items = document.querySelectorAll('li')
+
+    items.forEach(item => {
+        const itemName = item.textContent.toLowerCase()
+
+        if (itemName.indexOf(txt) != -1){
+            item.style.display = 'flex'
+        }else{
+            item.style.display = 'none'
+        }
+    })
+}
+
 // Removing items
 itemList.addEventListener('click',removeItem)
 clrBtn.addEventListener('click',removeAllItem)
+filter.addEventListener('input',filterItems)
 
 resetUI()
