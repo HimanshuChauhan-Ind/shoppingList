@@ -8,13 +8,19 @@ let editMode = false
 
 //A function that inserts into the ul the op from the form
 function addItem(e){
-    console.log(e.target.textContent,editMode)
+    // Check if Enter key was pressed and if in edit mode
+    if (e.key === 'Enter' && editMode) {
+        // Prevent the default behavior (form submission) in edit mode
+        e.preventDefault();
+        return;
+    }
     let itemTxt = document.createTextNode(itemInput.value)
 
-
     e.preventDefault()
-    
-    // Edit mode
+    //Dupicate Checker
+   
+    if(!duplicateCheck(itemInput.value.trim().toLowerCase())){
+        // Edit mode
     if(editMode){
         const editItem = document.querySelector('.edit-mode')
 
@@ -30,10 +36,30 @@ function addItem(e){
     }
     
     addItemDOM(itemTxt)
-
+    
+    }else{
+        alert('Items is already in list')
+    }
     itemInput.value = ''
 
     resetUI()
+}
+
+function duplicateCheck(str){
+    let lclStorage;
+    // let items = JSON.parse(localStorage.getItem('items'))
+    if(localStorage.getItem('items') === null){
+        lclStorage = []
+        return false;
+    }else{
+       
+        lclStorage = JSON.parse(localStorage.getItem('items')).map(i => i.toLowerCase())
+        if(lclStorage.indexOf(str) != -1){
+            return true
+        }else{
+            return false
+        }
+    }
 }
 
 function addItemDOM(itemTxt){
@@ -80,7 +106,7 @@ function removeItem(e){
     }
 
     resetUI()
-    console.log(`In the removeItem: ${editMode}`)
+    
 }
 
 function removeItemFromStorage(item){
@@ -138,7 +164,7 @@ function resetUI(){
 
 // Filter Items
 function filterItems(e){
-    // console.log(e.target.value)
+    
     const txt = e.target.value.toLowerCase()
     const items = document.querySelectorAll('li')
 
@@ -177,9 +203,7 @@ function editItem(e){
 
 }
 
-function editList(e,itemTxt){
-    console.log(e,itemTxt)
-}
+
 
 // Event Listeners
 form.addEventListener('submit',addItem)
@@ -190,6 +214,6 @@ itemList.addEventListener('click',editItem)
 
 lclInsert()
 resetUI()
-const intervalId = setInterval(function() {
-    console.log(editMode);
-}, 2000);
+// const intervalId = setInterval(function() {
+//     console.log(editMode);
+// }, 2000);
